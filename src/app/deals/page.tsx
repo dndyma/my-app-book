@@ -1,5 +1,7 @@
-function DealsPage() {
-  return <div>DealsPage</div>;
+import Link from 'next/link';
+import DealsPage from '../components/pages/DealsPage/page';
+function Deals() {
+  return <DealsPage />;
 }
 
-export default DealsPage;
+export default Deals;

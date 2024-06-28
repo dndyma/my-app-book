@@ -28,7 +28,6 @@ function CardPage(props: cardtypage) {
                 <hr className="w-64 h-px my-8 bg-gray-200 border-0 group-hover:bg-primary transition delay-100" />
               </div>
             </div>
-
             <div>
               <h1 className="text-secondary">Includes : </h1>
               <ul className={`text-sm  mt-4 ${roboto.className} w-full`}>

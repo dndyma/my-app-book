@@ -1,8 +1,12 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { signIn, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 function Navbar() {
   const pathname = usePathname();
+  const data = useSession();
+  console.log(data);
   return (
     <nav className={`flex justify-between items-center py-5 px-16`}>
       <h1 className="text-2xl flex items-center">
@@ -50,7 +54,10 @@ function Navbar() {
           </Link>
         </li>
 
-        <button className="border-2 cursor-pointer border-primary rounded-lg p-4 text-primary hover:bg-primary hover:text-white transition-all duration-200">
+        <button
+          onClick={() => signIn()}
+          className="border-2 cursor-pointer border-primary rounded-lg p-4 text-primary hover:bg-primary hover:text-white transition-all duration-200"
+        >
           Sign In
         </button>
       </div>
