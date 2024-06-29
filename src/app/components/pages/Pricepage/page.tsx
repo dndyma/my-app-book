@@ -1,5 +1,5 @@
 import { Inter, Roboto } from 'next/font/google';
-import CardPage from '../../ui/Card/page';
+import CardPage from '../../ui/CardProduct/page';
 const inter = Inter({ subsets: ['latin'], weight: '500' });
 
 function PricePage() {
