@@ -2,10 +2,13 @@
 import { getToken } from 'next-auth/jwt';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function LoginPage() {
-  const { push } = useRouter();
+  const { push }: any = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const handleLogin = async (e: any) => {
     e.preventDefault();
     try {
@@ -13,10 +16,10 @@ function LoginPage() {
         redirect: false,
         email: e.target.email.value,
         password: e.target.password.value,
-        callbackUrl: '/',
+        callbackUrl: callbackUrl,
       });
       if (!res?.error) {
-        push('/');
+        push(callbackUrl);
       }
     } catch (error) {
       console.log(error);
@@ -70,6 +73,9 @@ function LoginPage() {
             </button>
             <hr className="w-full" />
             <button
+              onClick={() =>
+                signIn('google', { callbackUrl: callbackUrl, redirect: false })
+              }
               type="submit"
               className="bg-primary rounded-full text-white p-2"
             >
@@ -89,6 +95,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-function push(arg0: string) {
-  throw new Error('Function not implemented.');
-}

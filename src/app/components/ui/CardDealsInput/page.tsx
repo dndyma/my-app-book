@@ -3,9 +3,7 @@ import Link from 'next/link';
 import React, { useEffect } from 'react';
 import useSWR from 'swr';
 
-function CardDeals({ api }: { api: any }) {
-  const { data, error } = useSWR(api, fetcher);
-  if (!data) return <div>Loading...</div>;
+function CardDeals(props: React.ReactNode) {
   return (
     <>
       {data.detailDataProducts &&

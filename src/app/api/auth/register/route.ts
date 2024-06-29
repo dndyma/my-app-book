@@ -1,8 +1,14 @@
-import { registerData } from '@/app/lib/firebase/service';
-import { NextResponse } from 'next/server';
+import { registerData } from '@/lib/firebase/service';
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const data = await request.json();
   const result = await registerData(data);
-  return NextResponse.json({ status: 200, message: 'Succes', result });
+  return NextResponse.json(
+    {
+      status: result.status,
+      message: result.message,
+    },
+    { status: result.statusCode }
+  );
 }

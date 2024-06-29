@@ -6,6 +6,7 @@ import {
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
@@ -66,6 +67,44 @@ export async function loginData(data: any) {
   });
   if (userData) {
     return userData[0];
+  } else {
+    return null;
+  }
+}
+
+export async function loginGoogle(data: any, callback: Function) {
+  const q = query(
+    collection(firestore, 'users'),
+    where('email', '==', data.email)
+  );
+  const snapshot = await getDocs(q);
+  const userData: any = snapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+  if (userData.length > 0) {
+    data.role = userData[0].role;
+    await updateDoc(doc(firestore, 'users', userData[0].id), data).then(() => {
+      callback({ status: true, data: data });
+    });
+  } else {
+    data.role = 'member';
+    return await addDoc(collection(firestore, 'users'), data).then(() => {
+      callback({ status: true, data: data });
+    });
+  }
+}
+
+export async function retrieveDataByInput(data: any) {
+  const q = query(
+    collection(firestore, 'product'),
+    where('Category', '==', data.Category)
+  );
+  const snapshot = await getDocs(q);
+  const userData = snapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+  if (userData) {
+    return userData;
   } else {
     return null;
   }

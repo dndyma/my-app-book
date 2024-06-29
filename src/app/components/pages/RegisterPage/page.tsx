@@ -1,10 +1,14 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 function RegisterPage() {
   const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const handleSubmit = async (e: any) => {
+    setLoading(true);
     e.preventDefault();
     const res = await fetch('/api/auth/register', {
       method: 'POST',
@@ -19,9 +23,10 @@ function RegisterPage() {
     });
     if (res.status === 200) {
       e.target.reset();
-      push('/');
+      push('/login');
     } else {
-      console.log('ada error');
+      setLoading(false);
+      setError('Email Already Exist');
     }
   };
   return (
@@ -80,11 +85,17 @@ function RegisterPage() {
                 placeholder="password"
               />
             </div>
+            {error.length > 0 && (
+              <h1 className="text-red-500 text-center">{error}</h1>
+            )}
             <button
               type="submit"
-              className="bg-primary rounded-full text-white p-2 mt-5"
+              className={`${
+                loading ? 'bg-gray-400' : 'bg-primary'
+              } rounded-full text-${loading ? 'black' : 'white'} p-2 mt-5`}
+              disabled={loading}
             >
-              Sign Up
+              {loading ? 'Loading...' : 'Sign Up'}
             </button>
             {/* <hr className="w-full" />
             <button

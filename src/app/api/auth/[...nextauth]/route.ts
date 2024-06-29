@@ -1,6 +1,8 @@
-import { loginData } from '@/app/lib/firebase/service';
+import { loginData, loginGoogle } from '@/lib/firebase/service';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+
 import bcrypt from 'bcrypt';
 const authOptions: NextAuthOptions = {
   session: {
@@ -35,13 +37,33 @@ const authOptions: NextAuthOptions = {
         }
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    }),
   ],
 
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }: any) {
       if (account?.provider === 'credentials') {
         token.email = user.email;
-        token.fullname = user.name;
+        token.fullname = user.fullname;
+        token.role = user.role;
+      }
+      if (account?.provider === 'google') {
+        const data = {
+          fullname: user.name,
+          email: user.email,
+          type: 'google',
+        };
+        await loginGoogle(data, (result: { status: boolean; data: any }) => {
+          if (result.status) {
+            token.email = result.data.email;
+            token.fullname = result.data.fullname;
+            token.role = result.data.role;
+            token.type = result.data.type;
+          }
+        });
       }
       return token;
     },
@@ -51,6 +73,9 @@ const authOptions: NextAuthOptions = {
       }
       if ('fullname' in token) {
         session.user.fullname = token.fullname;
+      }
+      if ('role' in token) {
+        session.user.role = token.role;
       }
       return session;
     },
